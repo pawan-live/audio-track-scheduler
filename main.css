@@ -1,0 +1,19 @@
+.hidden {
+    display: none;
+}
+
+.status-text {
+    font-size: 20px !important;
+    color: white;
+    padding: 3px 12px;
+    border-radius: 50px;
+}
+
+.status-idle {
+    background-color: rgb(51, 112, 216);
+}
+
+.status-live {
+    background-color: rgb(242, 73, 73);
+    box-shadow: 0px 0px 15px rgba(255, 28, 28, 0.628);
+}

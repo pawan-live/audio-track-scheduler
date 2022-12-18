@@ -1,0 +1,14 @@
+{
+    "table": [{
+            "id": "06:30",
+            "name": "Morning alarm",
+            "file": "C://Users/Documents/tone.mp3"
+        },
+        {
+            "id": "06:50",
+            "name": "National Anthem",
+            "file": "C://Users/Documents/national-anthem.mp3"
+        }
+    ]
+
+}

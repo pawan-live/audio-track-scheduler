@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>alarm-scheduler</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/css/Navbar-Right-Links-Dark-icons.css">
+
+    <!-- google fonts -->
+    <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet"> -->
+    <!-- google fonts end -->
+
+    <link rel="stylesheet" href="main.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-dark navbar-expand-md bg-dark py-3">
+        <div class="container"><a class="navbar-brand d-flex align-items-center" href="#"><span>⏱ Tone Scheduler
+                    App</span>&nbsp;&nbsp;&nbsp;<span class="status-text status-live ">LIVE</span></a><button
+                class="navbar-toggler" data-bs-toggle="collapse"><span class="visually-hidden">Toggle
+                    navigation</span><span class="navbar-toggler-icon"></span></button>
+        </div>
+    </nav>
+    <div class="container" style="margin-top: 16px;">
+        <div class="row">
+            <div class="col-md-8" style="padding: 10px;">
+
+                <!-- events table -->
+                <div class="table-responsive text-capitalize shadow-sm"
+                    style="background: #f8fcff;padding: 10px;border-radius: 10px;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th title="Time" style="width: 120px;">Time</th>
+                                <th>Event Name</th>
+                                <th style="width: 120px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>06:30</td>
+                                <td>Starting music</td>
+                                <td>
+                                    <div class="btn-group" role="group"><button class="btn btn-light link-primary"
+                                            data-bs-toggle="tooltip" data-bss-tooltip="" type="button" title="Edit"
+                                            style="border-style: solid;border-color: var(--bs-btn-hover-border-color);"><i
+                                                class="fas fa-pencil-alt"></i></button><button
+                                            class="btn btn-light link-danger" data-bs-toggle="tooltip"
+                                            data-bss-tooltip="" type="button" title="Delete"
+                                            style="border-color: var(--bs-btn-hover-border-color);"><i
+                                                class="fas fa-trash-alt"></i></button></div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-4"
+                style="padding: 20px;padding-top: 10px;padding-right: 20px;padding-bottom: 20px;padding-left: 20px;">
+
+                <!-- time section -->
+                <div id="time-section--row" class="row"
+                    style="background: #f5faff;padding: 16px;border-radius: 10px;box-shadow: 2px 2px 4px rgba(33,37,41,0.27);">
+                    <div class="col" style="padding-right: 0;padding-left: 0;padding-bottom: 0;">
+                        <p class="fs-1 fw-semibold" style="margin-bottom: 0px;margin-top: -6px;">12:27:10</p>
+                        <p class="fs-4" style="margin-bottom: 10px;">
+                            <span class="status-text status-live hidden">LIVE</span>
+                            <span class="status-text status-idle">IDLE</span>
+                        </p><button class="btn btn-success" type="button" style="margin-right: 6px;"
+                            title="Start system">Start</button><button class="btn btn-danger"
+                            type="button">Stop</button>
+                    </div>
+                </div>
+
+                <!-- add new event button section -->
+                <div id="new-btn--row" class="row">
+                    <div class="col" style="padding: 16px;"><button class="btn btn-primary" data-bs-toggle="tooltip"
+                            data-bss-tooltip="" type="button" title="Add new event">+ Add New</button></div>
+                </div>
+
+                <!-- alert message [hidden] -->
+                <div id="alert--row" class="alert alert-danger hidden" role="alert"
+                    style="margin-left: -12px;margin-right: -12px;">
+                    <span><strong>Alert</strong> text.</span>
+                </div>
+
+                <!-- passcode form [hidden] -->
+                <div id="passcode--row" class="row hidden"
+                    style="background: #f5faff;padding: 16px;border-radius: 10px;margin-bottom: 16px">
+                    <div class="col" style="padding-right: 0;padding-left: 0;padding-bottom: 0;">
+                        <form><label class="form-label" style="margin-bottom: 6px;">Enter passcode</label><input
+                                class="form-control" type="text" style="margin-bottom: 12px;" autofocus=""><button
+                                class="btn btn-primary" type="button" style="margin-right: 8px;">Submit</button><button
+                                class="btn btn-light link-danger" type="button"
+                                style="border-width: 1px;border-style: solid;">Cancel</button></form>
+                    </div>
+                </div>
+
+                <!-- add new event form [hidden] -->
+                <div id="new-form--row" class="row hidden"
+                    style="background: #f5faff;padding: 16px;border-radius: 10px;">
+                    <div class="col" style="padding-right: 0;padding-left: 0;padding-bottom: 0;">
+                        <form><label class="form-label" style="margin-bottom: 6px;">Name</label><input
+                                class="form-control" type="text" style="margin-bottom: 12px;"><label class="form-label"
+                                style="margin-bottom: 6px;">Start Time</label><input class="form-control" type="time"
+                                style="margin-bottom: 12px;"><label class="form-label"
+                                style="margin-bottom: 6px;">Tone</label><input class="form-control" type="file"
+                                style="margin-bottom: 18px;"><button class="btn btn-success" type="button"
+                                style="margin-right: 8px;">Save</button><button class="btn btn-light link-danger"
+                                type="button" style="border-width: 1px;border-style: solid;">Cancel</button></form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="text-center">
+        <div class="container text-muted py-4 py-lg-5">
+            <p class="mb-0">Copyright © 2022-2023 | www.fruityapps.live</p>
+        </div>
+    </footer>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/bs-init.js"></script>
+    <script src="./app.js"></script>
+</body>
+
+</html>
