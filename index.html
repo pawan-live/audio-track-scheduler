@@ -19,9 +19,9 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-dark navbar-expand-md bg-dark py-3">
+    <nav id="navbar-main" class="navbar navbar-dark navbar-expand-md bg-dark py-3">
         <div class="container"><a class="navbar-brand d-flex align-items-center" href="#"><span>⏱ Tone Scheduler
-                    App</span>&nbsp;&nbsp;&nbsp;<span class="status-text status-live ">LIVE</span></a><button
+                    App</span>&nbsp;&nbsp;&nbsp;<span class="status-text status-live hidden">LIVE</span></a><button
                 class="navbar-toggler" data-bs-toggle="collapse"><span class="visually-hidden">Toggle
                     navigation</span><span class="navbar-toggler-icon"></span></button>
         </div>
@@ -41,8 +41,9 @@
                                 <th style="width: 120px;">Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
+                        <tbody id="table-content">
+                            <!-- table row template -->
+                            <!-- <tr>
                                 <td>06:30</td>
                                 <td>Starting music</td>
                                 <td>
@@ -55,7 +56,15 @@
                                             style="border-color: var(--bs-btn-hover-border-color);"><i
                                                 class="fas fa-trash-alt"></i></button></div>
                                 </td>
+                            </tr> -->
+
+                            <!-- empty table message -->
+                            <tr id="table--empty-text">
+                                <td colspan="3">
+                                    <p align="center">No events found</p>
+                                </td>
                             </tr>
+
                         </tbody>
                     </table>
                 </div>
@@ -65,32 +74,32 @@
 
                 <!-- time section -->
                 <div id="time-section--row" class="row"
-                    style="background: #f5faff;padding: 16px;border-radius: 10px;box-shadow: 2px 2px 4px rgba(33,37,41,0.27);">
+                    style="background: #f5faff;padding: 16px; margin-bottom: 16px; border-radius: 10px;box-shadow: 2px 2px 4px rgba(33,37,41,0.27);">
                     <div class="col" style="padding-right: 0;padding-left: 0;padding-bottom: 0;">
-                        <p class="fs-1 fw-semibold" style="margin-bottom: 0px;margin-top: -6px;">12:27:10</p>
+                        <p id="time_display" class="fs-1 fw-semibold" style="margin-bottom: 0px;margin-top: -6px;">
+                            --:--:--</p>
                         <p class="fs-4" style="margin-bottom: 10px;">
                             <span class="status-text status-live hidden">LIVE</span>
-                            <span class="status-text status-idle">IDLE</span>
+                            <span class="status-text status-idle">READY</span>
                         </p><button class="btn btn-success" type="button" style="margin-right: 6px;"
                             title="Start system">Start</button><button class="btn btn-danger"
                             type="button">Stop</button>
                     </div>
                 </div>
 
-                <!-- add new event button section -->
-                <div id="new-btn--row" class="row">
-                    <div class="col" style="padding: 16px;"><button class="btn btn-primary" data-bs-toggle="tooltip"
-                            data-bss-tooltip="" type="button" title="Add new event">+ Add New</button></div>
-                </div>
+
 
                 <!-- alert message [hidden] -->
-                <div id="alert--row" class="alert alert-danger hidden" role="alert"
-                    style="margin-left: -12px;margin-right: -12px;">
-                    <span><strong>Alert</strong> text.</span>
+                <div id="alert--row" class="alert alert-danger" role="alert" onclick="hideAlert()"
+                    style="display: none; margin-left: -12px;margin-right: -12px; box-shadow: 2px 2px 4px rgba(33,37,41,0.27);">
+                    <span><strong>❌ &nbsp;Error</strong> <span id="error-field">An error occurred.</span>&nbsp;·
+                        <b>Click
+                            to Restart App 🔁</b></span></span>
                 </div>
 
                 <!-- passcode form [hidden] -->
-                <div id="passcode--row" class="row hidden"
+                <!-- PASSCODE FORM REPLACED WITH BROWSER PROMPT -->
+                <!-- <div id="passcode--row" class="row hidden"
                     style="background: #f5faff;padding: 16px;border-radius: 10px;margin-bottom: 16px">
                     <div class="col" style="padding-right: 0;padding-left: 0;padding-bottom: 0;">
                         <form><label class="form-label" style="margin-bottom: 6px;">Enter passcode</label><input
@@ -99,20 +108,24 @@
                                 class="btn btn-light link-danger" type="button"
                                 style="border-width: 1px;border-style: solid;">Cancel</button></form>
                     </div>
-                </div>
+                </div> -->
 
                 <!-- add new event form [hidden] -->
-                <div id="new-form--row" class="row hidden"
-                    style="background: #f5faff;padding: 16px;border-radius: 10px;">
+                <div id="new-form--row" class="row"
+                    style="background: #f5faff;padding: 16px;border-radius: 10px; box-shadow: 2px 2px 4px rgba(33,37,41,0.27);">
                     <div class="col" style="padding-right: 0;padding-left: 0;padding-bottom: 0;">
-                        <form><label class="form-label" style="margin-bottom: 6px;">Name</label><input
-                                class="form-control" type="text" style="margin-bottom: 12px;"><label class="form-label"
-                                style="margin-bottom: 6px;">Start Time</label><input class="form-control" type="time"
-                                style="margin-bottom: 12px;"><label class="form-label"
-                                style="margin-bottom: 6px;">Tone</label><input class="form-control" type="file"
-                                style="margin-bottom: 18px;"><button class="btn btn-success" type="button"
-                                style="margin-right: 8px;">Save</button><button class="btn btn-light link-danger"
-                                type="button" style="border-width: 1px;border-style: solid;">Cancel</button></form>
+                        <form id="new-event-form"><label class="form-label" style="margin-bottom: 6px;">Name</label>
+                            <input id="form_name" class="form-control" type="text" style="margin-bottom: 12px;">
+                            <label class="form-label" style="margin-bottom: 6px;">Start
+                                Time</label>
+                            <input id="form_time" class="form-control" type="time" style="margin-bottom: 12px;">
+                            <label class="form-label" style="margin-bottom: 6px;">Tone</label>
+                            <input id="form_file" class="form-control" type="file" style="margin-bottom: 18px;">
+                            <button class="btn btn-primary" type="button" style="margin-right: 8px;"
+                                onclick="createNewEvent()">+ Add New Event</button>
+                            <button class="btn btn-light" type="button" style="border-width: 1px;border-style: solid;"
+                                onclick="resetForm()">Reset</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -120,11 +133,13 @@
     </div>
     <footer class="text-center">
         <div class="container text-muted py-4 py-lg-5">
-            <p class="mb-0">Copyright © 2022-2023 | www.fruityapps.live</p>
+            <p class="mb-0">Copyright © 2022-2023 | </p>
         </div>
     </footer>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/js/bs-init.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js"
+        integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
     <script src="./app.js"></script>
 </body>
 
