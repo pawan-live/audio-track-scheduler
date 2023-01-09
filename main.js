@@ -33,37 +33,9 @@ app.on("window-all-closed", () => {
   }
 });
 
-// ExpressJS setup
+// var server = expressApp.listen(3080, function () {
+//   var host = server.address().address;
+//   var port = server.address().port;
 
-// Endpoint to Get a list of users
-expressApp.get("/getData", function (req, res) {
-  fs.readFile(__dirname + "/" + "data.json", "utf8", function (err, data) {
-    res.send(data);
-  });
-});
-
-expressApp.use(bodyParser.json());
-expressApp.use(cors());
-
-expressApp.post("/writeData", (req, res) => {
-  const data = req.body;
-  console.log(data);
-
-  // set content-type to json
-  res.setHeader("Content-Type", "application/json");
-
-  fs.writeFile(__dirname + "/" + "data.json", JSON.stringify(data), (err) => {
-    if (err) throw err;
-    console.log(data);
-    console.log("Data written to file");
-  });
-
-  res.send("Data written to file");
-});
-
-var server = expressApp.listen(3080, function () {
-  var host = server.address().address;
-  var port = server.address().port;
-
-  console.log("Listening at http://%s:%s", host, port);
-});
+//   console.log("Listening at http://%s:%s", host, port);
+// });

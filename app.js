@@ -1,7 +1,11 @@
 /* ---- START CONFIG ---- */
 
-// require axios
-import { get } from "./axios";
+// LOWDB Setup
+const low = require("lowdb");
+const FileSync = require("lowdb/adapters/FileSync");
+
+const adapter = new FileSync("db.json");
+const db = low(adapter);
 
 var obj = {
   table: [],
@@ -13,16 +17,8 @@ var obj = {
 
 /* ---- FUNCTIONS ---- */
 
-// read json file on load
-function getData() {
-  get("/getData")
-    .then((response) => {
-      console.log(response.data);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-}
+// get data from LOWDB database
+// function getData() {}
 
 // load table
 function loadTable(array) {
@@ -84,84 +80,7 @@ function createNewEvent() {
   }
 
   obj.table.push({ id: time, name: name, file: url });
-
-  // var json = JSON.stringify(obj);
-  writeToFile(obj);
 }
-
-// write data to json file (pass in the object here)
-function writeToFile(object) {
-  fetch("/writeData", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(object),
-  })
-    .then((response) => response.text())
-    .then((data) => {
-      console.log(data);
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
-}
-
-// delete event
-function deleteEvent(id) {
-  if (confirm("Are you sure you want to delete?") == true) {
-    authState;
-    validatePassword();
-    if (authState == true) {
-      console.log("deleted event");
-    } else {
-      console.log("x");
-    }
-  }
-}
-
-// edit event
-function editEvent(id) {
-  if (confirm("Are you sure you want to edit?") == true) {
-    console.log("edited event " + id);
-  }
-}
-
-// fetch JSON data
-// async function fetchJSON(url) {
-//   try {
-//     const response = await fetch(url);
-//     return await response.json();
-//   } catch (err) {
-//     throwError(err);
-//   }
-// }
-
-// sets authentication state to false
-// function resetAuth() {
-//   authState = false;
-// }
-
-// validate password
-// function validatePassword() {
-//   let jsonData;
-//   authState = false; // reset authstate
-
-//   fetchJSON("./config.json")
-//     .then((data) => {
-//       jsonData = data;
-//     })
-//     .then(() => {
-//       if (
-//         prompt("Enter password to continue.") == jsonData.settings[0].password
-//       ) {
-//         authState = true;
-//       } else {
-//         authState = false;
-//         alert("Incorrect password.");
-//       }
-//     });
-// }
 
 function hideAlert() {
   document.getElementById("alert--row").style.display = "none";
@@ -183,7 +102,7 @@ function resetForm() {
 
 function displayTime() {
   var now = new Date();
-  time = now.toLocaleTimeString("en-US", {
+  let time = now.toLocaleTimeString("en-US", {
     hour: "numeric",
     minute: "numeric",
     second: "numeric",
