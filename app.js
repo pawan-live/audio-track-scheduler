@@ -1,48 +1,28 @@
 /* ---- START CONFIG ---- */
 
+// require axios
+import { get } from "./axios";
+
 var obj = {
   table: [],
 };
 
-// var defaultErrorMsg = "Please contact developer for assistance.";
-
-// authentication state for password
-// var authState;
-
 /* ---- END CONFIG ---- */
 
-getData();
+// getData();
 
 /* ---- FUNCTIONS ---- */
 
 // read json file on load
 function getData() {
-  fetch("/getUsers")
-    .then(function (response) {
-      return response.json();
+  get("/getData")
+    .then((response) => {
+      console.log(response.data);
     })
-    .then(function (data) {
-      console.log(data);
+    .catch((error) => {
+      console.error(error);
     });
 }
-// function getData() {
-//   fetch("./data.json")
-//     .then((response) => {
-//       return response.json();
-//     })
-//     .then((data) => (obj = data))
-//     .then(function () {
-//       if (obj.table.length > 0) {
-//         loadTable(obj.table);
-//       } else {
-//         console.log("no data");
-//       }
-//     });
-// }
-
-// timer event
-
-// set display time
 
 // load table
 function loadTable(array) {
@@ -91,19 +71,40 @@ function addRowToTable(name, id) {
   tableContent.innerHTML = tableData;
 }
 
+// create new event and add it to the table object
 function createNewEvent() {
-  let name = document.getElementById("form_name");
-  let time = document.getElementById("form_time");
-  let url = document.getElementById("form_url");
+  let name = document.getElementById("form_name").value;
+  let time = document.getElementById("form_time").value;
+  let url = document.getElementById("form_file").value;
 
-  console.log(name.value, time.value, url.value);
+  // validate form
+  if (name == "" || time == "" || url == "") {
+    throwError("Please fill out all fields.");
+    return;
+  }
 
-  obj.table.push({ id: time.value, name: name.value, file: url.value });
-  var json = JSON.stringify(obj);
+  obj.table.push({ id: time, name: name, file: url });
 
-  // writeFile("data.json", json, "utf8", function () {
-  //   console.log("complete");
-  // });
+  // var json = JSON.stringify(obj);
+  writeToFile(obj);
+}
+
+// write data to json file (pass in the object here)
+function writeToFile(object) {
+  fetch("/writeData", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(object),
+  })
+    .then((response) => response.text())
+    .then((data) => {
+      console.log(data);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
 }
 
 // delete event

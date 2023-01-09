@@ -1,0 +1,24 @@
+{
+    "table": [{
+            "id": "06:30",
+            "name": "Event 1",
+            "file": "C://Users/Documents/tone.mp3"
+        },
+        {
+            "id": "06:50",
+            "name": "Event 2",
+            "file": "C://Users/Documents/national-anthem.mp3"
+        },
+        {
+            "id": "07:10",
+            "name": "Event 3",
+            "file": "C://Users/Documents/national-anthem.mp3"
+        },
+        {
+            "id": "07:00",
+            "name": "Event 4",
+            "file": "C://Users/Documents/national-anthem.mp3"
+        }
+    ]
+
+}

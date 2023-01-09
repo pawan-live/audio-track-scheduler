@@ -1,8 +1,12 @@
 // electron JS setup
 const { app, BrowserWindow } = require("electron");
-var express = require("express");
-var expressApp = express();
-var fs = require("fs"); //require file system object
+const express = require("express");
+const expressApp = express();
+const fs = require("fs"); //require file system object
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const path = require("path");
+const axios = require("axios");
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -10,7 +14,7 @@ const createWindow = () => {
     height: 1400,
   });
 
-  win.loadFile("index.html");
+  win.loadFile(__dirname + "/" + "index.html");
 };
 
 app.whenReady().then(() => {
@@ -29,17 +33,35 @@ app.on("window-all-closed", () => {
   }
 });
 
-// express app
+// ExpressJS setup
 
 // Endpoint to Get a list of users
-expressApp.get("/getUsers", function (req, res) {
+expressApp.get("/getData", function (req, res) {
   fs.readFile(__dirname + "/" + "data.json", "utf8", function (err, data) {
-    // res.end(data); // you can also use res.send()
     res.send(data);
   });
 });
 
-var server = expressApp.listen(8080, function () {
+expressApp.use(bodyParser.json());
+expressApp.use(cors());
+
+expressApp.post("/writeData", (req, res) => {
+  const data = req.body;
+  console.log(data);
+
+  // set content-type to json
+  res.setHeader("Content-Type", "application/json");
+
+  fs.writeFile(__dirname + "/" + "data.json", JSON.stringify(data), (err) => {
+    if (err) throw err;
+    console.log(data);
+    console.log("Data written to file");
+  });
+
+  res.send("Data written to file");
+});
+
+var server = expressApp.listen(3080, function () {
   var host = server.address().address;
   var port = server.address().port;
 
