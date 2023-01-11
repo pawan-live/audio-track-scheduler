@@ -1,19 +1,14 @@
 {
   "events": [
     {
-      "name": "National Anthem",
-      "time": "06:00",
+      "name": "Alarm 1",
+      "time": "02:23",
       "url": "C:\\fakepath\\Yuki_Navaratne_Manabandu_Karanawak___Official_Ly.mp3"
     },
     {
-      "name": "Tea Break",
-      "time": "12:00",
-      "url": "C:\\fakepath\\Iren_Haden_Dj_Remix_Dj_Namal_ඉරෙන්_හදෙන්___V.mp3"
-    },
-    {
-      "name": "Alarm",
-      "time": "09:20",
-      "url": "C:\\fakepath\\Pansal_Poth_Nalu_Ran_Kevita_Hoomy_Edit_.mp3"
+      "name": "alarm 2",
+      "time": "02:25",
+      "url": "C:\\fakepath\\music2.mp3"
     }
   ],
   "user": {}

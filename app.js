@@ -4,6 +4,14 @@ var obj = {
   events: [],
 };
 
+// check current time and play music
+
+var currentTime = new Date().toLocaleTimeString();
+
+// convert current time to hh:mm format
+currentTime = currentTime.split(":");
+currentTime = currentTime[0] + ":" + currentTime[1];
+
 /* ---- END CONFIG ---- */
 
 getData();
@@ -179,4 +187,37 @@ function sortEvents() {
   });
 }
 
+// check events and time each minute
+
+function checkEventsAndTime() {
+  for (var i = 0; i < obj.events.length; i++) {
+    console.log("test" + i);
+    if (obj.events[i].time === currentTime) {
+      if (obj.events[i].time !== nowPlaying) {
+        playAudio(obj.events[i].url, obj.events[i].time);
+      }
+    }
+  }
+}
+
+// music player code
+
+var x = document.getElementById("mainAudio");
+var nowPlaying;
+function playAudio(url, eventTime) {
+  x.src = url;
+
+  x.play();
+  nowPlaying = eventTime;
+  console.log("Now playing event @ " + eventTime);
+}
+
+function stopAudio() {
+  x.pause();
+  x.currentTime = 0;
+}
+
+// music player code end
+
 setInterval(displayTime, 1000);
+setInterval(checkEventsAndTime, 1000);
