@@ -8,14 +8,6 @@ var obj = {
 
 getData();
 
-document.querySelectorAll(".delete-event-btn").forEach((element) => {
-  console.log(element);
-  // element.addEventListener("click", function () {
-  //   let _time = element.parentNode.parentNode.parentNode.id;
-  //   deleteEvent(_time);
-  // });
-});
-
 /* ---- FUNCTIONS ---- */
 
 // get data from LOWDB database
@@ -25,6 +17,7 @@ function getData() {
     .then((res) => res.json())
     .then((data) => {
       obj.events = data;
+      sortEvents();
       loadTable(obj.events);
     })
     .catch((err) => {
@@ -66,7 +59,9 @@ function addRowToTable(time, name) {
                 </button> -->
                 <button class="delete-event-btn btn btn-light link-danger" data-bs-toggle="tooltip"
                     data-bss-tooltip="" type="button" title="Delete"
-                    style="border-color: var(--bs-btn-hover-border-color);">
+                    style="border-color: var(--bs-btn-hover-border-color);" onclick="deleteEvent('` +
+    time +
+    `')" >
                     <i class="fas fa-trash-alt"></i>
                 </button>
             </div>
@@ -167,6 +162,21 @@ function displayTime() {
     hour12: false,
   });
   document.getElementById("time_display").innerHTML = time;
+}
+
+// sort events by time
+function sortEvents() {
+  obj.events.sort(function (a, b) {
+    let timeA = a.time.split(":");
+    let timeB = b.time.split(":");
+    let dateA = new Date();
+    let dateB = new Date();
+    dateA.setHours(timeA[0]);
+    dateA.setMinutes(timeA[1]);
+    dateB.setHours(timeB[0]);
+    dateB.setMinutes(timeB[1]);
+    return dateA - dateB;
+  });
 }
 
 setInterval(displayTime, 1000);
