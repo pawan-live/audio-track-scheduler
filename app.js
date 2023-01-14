@@ -17,7 +17,8 @@ function updateCurrentTime() {
 
 /* ---- END CONFIG ---- */
 
-getData();
+// load data from db upon loading page
+document.onload = getData();
 
 /* ---- FUNCTIONS ---- */
 
@@ -38,8 +39,9 @@ function getData() {
 
 // load table
 function loadTable(array) {
-  // remove 'no events found' notice
-  document.getElementById("table--empty-text").style.display = "none";
+  // clear table
+  document.getElementById("table-content").innerHTML = "";
+
   array.forEach((element) => {
     addRowToTable(element.time, element.name);
   });
@@ -124,7 +126,8 @@ function createNewEvent() {
     .then((res) => res.json())
     .then((data) => {
       alert(data.message);
-      location.reload();
+      // location.reload();
+      getData();
     })
     .catch((err) => {
       console.log(err);
@@ -148,7 +151,8 @@ function deleteEvent(time) {
     .then((res) => res.json())
     .then((data) => {
       alert(data.message);
-      location.reload();
+      // location.reload();
+      getData();
     })
     .catch((err) => {
       console.log(err);
