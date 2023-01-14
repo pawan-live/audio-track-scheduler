@@ -6,11 +6,14 @@ var obj = {
 
 // check current time and play music
 
-var currentTime = new Date().toLocaleTimeString();
+var currentTime;
+let lastFileURL = "";
 
-// convert current time to hh:mm format
-currentTime = currentTime.split(":");
-currentTime = currentTime[0] + ":" + currentTime[1];
+function updateCurrentTime() {
+  currentTime = new Date().toLocaleTimeString();
+  currentTime = currentTime.split(":");
+  currentTime = currentTime[0] + ":" + currentTime[1];
+}
 
 /* ---- END CONFIG ---- */
 
@@ -82,11 +85,21 @@ function addRowToTable(time, name) {
   tableContent.innerHTML = tableData;
 }
 
+// event listener to catch file upload input field change
+
+let fileInput = document.getElementById("form_file");
+fileInput.addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  lastFileURL = file.path;
+  console.log(file.path);
+});
+
 // create new event and add it to the table object
 function createNewEvent() {
   let name = document.getElementById("form_name").value;
   let time = document.getElementById("form_time").value;
-  let url = document.getElementById("form_file").value;
+  // let url = document.getElementById("form_file").value;
+  let url = lastFileURL;
 
   // validate form
   if (name == "" || time == "" || url == "") {
@@ -191,9 +204,10 @@ function sortEvents() {
 
 function checkEventsAndTime() {
   for (var i = 0; i < obj.events.length; i++) {
-    console.log("test" + i);
     if (obj.events[i].time === currentTime) {
-      if (obj.events[i].time !== nowPlaying) {
+      console.log("Event @ " + obj.events[i].time);
+      if (obj.events[i].time != nowPlaying) {
+        console.log("event already playing");
         playAudio(obj.events[i].url, obj.events[i].time);
       }
     }
@@ -204,6 +218,7 @@ function checkEventsAndTime() {
 
 var x = document.getElementById("mainAudio");
 var nowPlaying;
+
 function playAudio(url, eventTime) {
   x.src = url;
 
@@ -221,3 +236,4 @@ function stopAudio() {
 
 setInterval(displayTime, 1000);
 setInterval(checkEventsAndTime, 1000);
+setInterval(updateCurrentTime, 1000);
