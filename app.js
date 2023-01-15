@@ -214,36 +214,46 @@ function createNewEvent() {
     alert("Please fill out all fields.");
     return;
   }
+  let confirmation = confirm("Are you sure you want to add this event?");
+  if (!confirmation) {
+    return;
+  } else {
+    // new indexedDB connection
+    let request = window.indexedDB.open("ALARMAPP", 1);
 
-  // new indexedDB connection
-  let request = window.indexedDB.open("ALARMAPP", 1);
+    request.onerror = (event) => {
+      console.log("Error opening database");
+    };
 
-  request.onerror = (event) => {
-    console.log("Error opening database");
-  };
+    request.onsuccess = (event) => {
+      console.log("Database opened successfully");
+      let db = event.target.result;
+      insertEvent(db, { time: time, name: name, url: url });
+    };
 
-  request.onsuccess = (event) => {
-    console.log("Database opened successfully");
-    let db = event.target.result;
-    insertEvent(db, { time: time, name: name, url: url });
-  };
-
-  resetForm();
+    resetForm();
+  }
 }
 
 function deleteEvent(time) {
-  // new indexedDB connection
-  let request = window.indexedDB.open("ALARMAPP", 1);
+  let confirmation = confirm("Are you sure you want to delete this event?");
 
-  request.onerror = (event) => {
-    console.log("Error opening database");
-  };
+  if (!confirmation) {
+    return;
+  } else {
+    // new indexedDB connection
+    let request = window.indexedDB.open("ALARMAPP", 1);
 
-  request.onsuccess = (event) => {
-    console.log("Database opened successfully");
-    let db = event.target.result;
-    _deleteEvent(db, time);
-  };
+    request.onerror = (event) => {
+      console.log("Error opening database");
+    };
+
+    request.onsuccess = (event) => {
+      console.log("Database opened successfully");
+      let db = event.target.result;
+      _deleteEvent(db, time);
+    };
+  }
 }
 
 function hideAlert() {
