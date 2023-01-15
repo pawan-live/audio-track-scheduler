@@ -45,7 +45,14 @@ var currentTime;
 let lastFileURL = ""; // file selected at input field
 
 function updateCurrentTime() {
-  currentTime = new Date().toLocaleTimeString();
+  // get 24 hour time
+  currentTime = new Date().toLocaleTimeString("en-US", {
+    hour12: false,
+    hour: "numeric",
+    minute: "numeric",
+  });
+
+  // currentTime = new Date().toLocaleTimeString();
   currentTime = currentTime.split(":");
   currentTime = currentTime[0] + ":" + currentTime[1];
 }
