@@ -1,13 +1,48 @@
-/* ---- START CONFIG ---- */
+// check if browser supports IndexedDB
+if (!window.indexedDB) {
+  console.log(`Your browser doesn't support IndexedDB. The app will not work.`);
+  alert("Your browser doesn't support IndexedDB. The app will not work.");
+}
 
+// set object structure
 var obj = {
   events: [],
 };
 
-// check current time and play music
+// setup indexedDB connection
+const request = indexedDB.open("ALARMAPP", 1);
 
+// create the Events object store and indexes
+request.onupgradeneeded = (event) => {
+  let db = event.target.result;
+
+  // create the Contacts object store
+  // with auto-increment id
+  let store = db.createObjectStore(
+    "Events",
+    { keyPath: "time", autoIncrement: false }
+    // { keyPath: "time" }
+  );
+
+  // create an index on the time property
+  store.createIndex("time", "time", {
+    unique: true,
+  });
+};
+
+request.onerror = (event) => {
+  console.error(`Database error: ${event.target.errorCode}`);
+};
+
+request.onsuccess = (event) => {
+  const db = event.target.result;
+  // get all contacts
+  getData(db);
+};
+
+// get current time
 var currentTime;
-let lastFileURL = "";
+let lastFileURL = ""; // file selected at input field
 
 function updateCurrentTime() {
   currentTime = new Date().toLocaleTimeString();
@@ -15,31 +50,103 @@ function updateCurrentTime() {
   currentTime = currentTime[0] + ":" + currentTime[1];
 }
 
-/* ---- END CONFIG ---- */
-
-// load data from db upon loading page
-document.onload = getData();
-
-/* ---- FUNCTIONS ---- */
-
 // get data from LOWDB database
-function getData() {
-  // send data as GET request to server
-  fetch("http://localhost:3080/getEvents")
-    .then((res) => res.json())
-    .then((data) => {
-      obj.events = data;
-      sortEvents();
-      loadTable(obj.events);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+function getData(db) {
+  obj.events = [];
+  // get all data from events store in Indexed DB
+  const txn = db.transaction("Events", "readonly");
+  const objectStore = txn.objectStore("Events");
+
+  objectStore.openCursor().onsuccess = (event) => {
+    let cursor = event.target.result;
+    if (cursor) {
+      let event = cursor.value;
+      // add event to events object
+      console.log(event);
+      obj.events.push(event);
+      // continue next record
+      cursor.continue();
+    }
+  };
+  // close the database connection
+  txn.oncomplete = function () {
+    db.close();
+    console.log("closed intial connection");
+    // load table
+    loadTable(obj.events);
+  };
+}
+
+function insertEvent(db, newEvent) {
+  // create a new transaction
+  const txn = db.transaction("Events", "readwrite");
+
+  // get the Events object store
+  const store = txn.objectStore("Events");
+
+  // check if event already exists
+  let existingEvent = store.get(newEvent.time);
+  existingEvent.onsuccess = function (event) {
+    if (existingEvent.result) {
+      alert("Event already exists", () => {
+        return;
+      });
+    } else {
+      let query = store.put(newEvent);
+      // handle success case
+      query.onsuccess = function (event) {
+        console.log(event);
+        // fetch data to the obj object
+        getData(db);
+      };
+
+      // handle the error case
+      query.onerror = function (event) {
+        console.log(event.target.errorCode);
+      };
+    }
+  };
+
+  // close the database once the
+  // transaction completes
+  // txn.oncomplete = function () {
+  //   db.close();
+  //   alert("Event added successfully");
+  // };
+}
+
+// function that handles the database event deletion
+function _deleteEvent(db, time) {
+  // create a new transaction
+  const txn = db.transaction("Events", "readwrite");
+
+  // get the Contacts object store
+  const store = txn.objectStore("Events");
+  //
+  let query = store.delete(time);
+
+  // handle the success case
+  query.onsuccess = function (event) {
+    console.log(event);
+
+    // fetch data to the obj object
+    getData(db);
+  };
+
+  // handle the error case
+  query.onerror = function (event) {
+    console.log(event.target.errorCode);
+  };
+
+  // close the database once the
+  // transaction completes
+  txn.oncomplete = function () {
+    db.close();
+  };
 }
 
 // load table
 function loadTable(array) {
-  // clear table
   document.getElementById("table-content").innerHTML = "";
 
   array.forEach((element) => {
@@ -88,7 +195,7 @@ function addRowToTable(time, name) {
 }
 
 // event listener to catch file upload input field change
-
+// this captures the real file path
 let fileInput = document.getElementById("form_file");
 fileInput.addEventListener("change", (event) => {
   const file = event.target.files[0];
@@ -96,11 +203,10 @@ fileInput.addEventListener("change", (event) => {
   console.log(file.path);
 });
 
-// create new event and add it to the table object
+// create new event and add it to the events object
 function createNewEvent() {
   let name = document.getElementById("form_name").value;
   let time = document.getElementById("form_time").value;
-  // let url = document.getElementById("form_file").value;
   let url = lastFileURL;
 
   // validate form
@@ -109,55 +215,35 @@ function createNewEvent() {
     return;
   }
 
-  // send data to database
+  // new indexedDB connection
+  let request = window.indexedDB.open("ALARMAPP", 1);
 
-  // send data as POST request to server
-  fetch("http://localhost:3080/addEvent", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      name: name,
-      time: time,
-      url: url,
-    }),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      alert(data.message);
-      // location.reload();
-      getData();
-    })
-    .catch((err) => {
-      console.log(err);
-      alert("Error. Could not add event.");
-    });
+  request.onerror = (event) => {
+    console.log("Error opening database");
+  };
+
+  request.onsuccess = (event) => {
+    console.log("Database opened successfully");
+    let db = event.target.result;
+    insertEvent(db, { time: time, name: name, url: url });
+  };
 
   resetForm();
 }
 
 function deleteEvent(time) {
-  // send data as POST request to server
-  fetch("http://localhost:3080/deleteEvent", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      time: time,
-    }),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      alert(data.message);
-      // location.reload();
-      getData();
-    })
-    .catch((err) => {
-      console.log(err);
-      alert("Error. Could not delete event.");
-    });
+  // new indexedDB connection
+  let request = window.indexedDB.open("ALARMAPP", 1);
+
+  request.onerror = (event) => {
+    console.log("Error opening database");
+  };
+
+  request.onsuccess = (event) => {
+    console.log("Database opened successfully");
+    let db = event.target.result;
+    _deleteEvent(db, time);
+  };
 }
 
 function hideAlert() {
@@ -204,14 +290,12 @@ function sortEvents() {
   });
 }
 
-// check events and time each minute
-
+// check events and time and play audio if time matches
 function checkEventsAndTime() {
   for (var i = 0; i < obj.events.length; i++) {
     if (obj.events[i].time === currentTime) {
-      console.log("Event @ " + obj.events[i].time);
+      // check if event is already playing to avoid playing the same music multiple times
       if (obj.events[i].time != nowPlaying) {
-        console.log("event already playing");
         playAudio(obj.events[i].url, obj.events[i].time);
       }
     }
@@ -219,7 +303,6 @@ function checkEventsAndTime() {
 }
 
 // music player code
-
 var x = document.getElementById("mainAudio");
 var nowPlaying;
 
@@ -235,9 +318,9 @@ function stopAudio() {
   x.pause();
   x.currentTime = 0;
 }
+// music player code ends
 
-// music player code end
-
+// timer functions
 setInterval(displayTime, 1000);
 setInterval(checkEventsAndTime, 1000);
 setInterval(updateCurrentTime, 1000);

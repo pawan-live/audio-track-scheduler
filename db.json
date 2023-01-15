@@ -1,16 +1,5 @@
 {
-  "events": [
-    {
-      "name": "Alarm 1",
-      "time": "02:23",
-      "url": "C:\\fakepath\\Yuki_Navaratne_Manabandu_Karanawak___Official_Ly.mp3"
-    },
-    {
-      "name": "alarm 2",
-      "time": "02:25",
-      "url": "C:\\fakepath\\music2.mp3"
-    },
-    {
+  "events": [{
       "name": "ffffff",
       "time": "00:55",
       "url": "/Users/pawanlive/Downloads/music/Pansal_Poth_Nalu_Ran_Kevita_Hoomy_Edit_.mp3.vdjstems"
